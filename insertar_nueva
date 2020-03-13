@@ -1,0 +1,56 @@
+# Insertar datos en MongoDB
+# -*- coding: utf-8 -*-
+
+from pymongo import MongoClient
+import csv
+import urllib2
+import json
+import StringIO
+from bson import json_util
+
+# CONEXION CON MONGO ATLAS
+def mongo_connect():
+    uri_mongo = "mongodb://usuario1:Admin1000@prueba-shard-00-00-la2ev.mongodb.net:27017,prueba-shard-00-01-la2ev.mongodb.net:27017,prueba-shard-00-02-la2ev.mongodb.net:27017/test?ssl=true&replicaSet=Prueba-shard-0&authSource=admin&retryWrites=true&w=majority" #Cadena MONGO ATLAS ---------> MODIFICAR
+    client = MongoClient(uri_mongo)
+    client.test
+    return client
+
+
+def read_csv(csv_path,client):
+
+    # DETERMINAR DB Y COLECCIÓN
+    db = client.bbdd_prueba  # database ----------> MODIFICAR
+    col = db.coleccion  # collection ----------> MODIFICAR
+
+    #archivo = urllib.urlopen(csv_path) #open file in url
+    #ls_json =  csv.DictReader(file,delimiter=';') #separate data
+    #json_file=json.loads(archivo.read())
+    #ls_rows={}
+    #print(json_file)
+    #for i in json_file:
+        #ls_rows.update(i) #add data to the dictionary
+    #    print(i)
+        #col.insert_one(i) #insert in client.Mongo.Prueba
+    
+    #print ('Se agregaron los datos correctamente a Mongo.')    
+
+    ls_rows = {} #create dictionary
+    file = urllib2.urlopen(csv_path) #open file in url
+    ls_csv =  csv.DictReader(file,delimiter=';') #separate data
+
+    for i in ls_csv:
+        ls_rows.update(i) #add data to the dictionary
+        col.insert_one(i)
+    return ls_rows
+
+if __name__ == "__main__": #se define main
+    #SOLO 8 DATOS
+    url_file='http://apigobiernoabiertortod.valencia.es/apirtod/rest/datasets/intensidad_espiras.csv'
+    #url_file=' http://apigobiernoabiertortod.valencia.es/apirtod/rest/datasets/intensidad_tramos.json'
+    #MAS DE 2000 DATOS
+    #url_file='http://mapas.valencia.es/WebsMunicipales/uploads/atmosferica/1A.csv' #file
+    #LLAMAR FUNCIONES
+    client= mongo_connect()
+    ls_csv = read_csv(url_file,client)
+
+
