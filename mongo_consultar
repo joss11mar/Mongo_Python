@@ -1,0 +1,48 @@
+# Insertar datos en MongoDB
+# -*- coding: utf-8 -*-
+
+from pymongo import MongoClient
+import csv
+import urllib2
+import json
+
+# CONEXION CON MONGO ATLAS
+def mongo_connect():
+    uri_mongo = "mongodb+srv://*user*:*password*@proyecto1-olk1t.gcp.mongodb.net/test?retryWrites=true&w=majority" #Cadena MONGO ATLAS ---------> MODIFICAR
+    client = MongoClient(uri_mongo)
+    client.test
+    return client
+
+# CONSULTA
+def consulta(col):
+    print ('CONSULTAS')
+    print ('')
+    buscar_atributo= input('Ingrese atributo a consultar >>> ') #debe de ser elemento de diccionario
+    atributo= input('Atributo guia >>> ')
+    valor=input('Valor guia >>> ')
+    valor_string=str(valor) #convertir valor númerico a string
+    data=col.find({atributo:valor_string})
+    for i in data:
+        print ('')
+        print (i[buscar_atributo])
+    return data
+
+
+if __name__ == "__main__":
+    print('>>>>> Start <<<<<')
+    print('')
+    
+    #DEFINIR COLECCIÓN Y BASE DE DATOS
+    
+    # Functions
+    client = mongo_connect()
+    
+    db = client.Mongo
+    col = db.Prueba
+
+          
+    # get data
+    consulta(col)
+
+    print('')
+    print('>>>>> Finish <<<<<')
